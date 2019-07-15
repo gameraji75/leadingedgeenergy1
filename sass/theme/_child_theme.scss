@@ -1,0 +1,81 @@
+// SCSS Syntax http://sass-lang.com/documentation/file.SASS_REFERENCE.html#css_extensions
+
+// variable declaration in SCSS we use variables to keep style clean and easy to modify
+// if we use this variable to say 50 rules and want to change the color, we would change only this variable.
+@font-face{
+    font-family:Gilroy;
+    font-display: swap;
+    src:url('../fonts/gilroy-regular.otf');
+}
+@font-face{
+    font-family:Gilroy-Black;
+    font-display: swap;
+    src:url('../fonts/gilroy-black.otf');
+}
+/** REMOVE WRAPPER SPACE **/
+.wrapper {
+    padding: 0;
+}
+/** END WRAPPER SPACE **/
+
+/** NAV FIXED PADDING **/
+body {
+    padding-top:60px;
+}
+@include media-breakpoint-down(sm) {
+    .navbar-brand > img {
+        max-height: 5rem;
+    }
+}
+/** END NAV FIXED PADDING **/
+
+/** Responsive Heading **/
+$counter : 0;
+@each $breakpoint in map-keys($grid-breakpoints) {
+    @include media-breakpoint-up($breakpoint) {
+        $c : 5;
+        @for $i from 1 through 5 {
+            h#{$i} { font-size: ( $font-size-base * ( 1 + ( $c * 0.2 )) + ($counter * $c * 0.1 ) ); }
+            $c : $c - 1;
+        }
+    }
+    $counter : $counter + 1;
+}
+/** END Responsive Heading **/
+
+/** COLOR VARIANTS **/
+@each $color, $value in $colors {
+    @include bg-variant('.bg-#{$color}', $value);
+    @include text-emphasis-variant('.text-#{$color}', $value);
+}
+/** END COLOR VARIANTS **/
+
+/** LOGO RESIZE **/
+.custom-logo-link { max-width: 100px; }
+/** END LOGO RESIZE **/
+
+/** SEARCH BAR ANIMATION **/
+.search-wrapper {
+    $sw : &;
+    button {
+        background:transparent;
+        color: #31bcad;
+        border: none;
+    }
+    button:hover {
+        color: #fff;
+    }
+    input[type=text] {
+        padding: 0;
+        width: 0rem;
+        opacity: 0;
+        transition: all 0.5s;
+        @at-root #{$sw}:hover input[type=text],
+        &:focus {
+            padding: .375rem .75rem;
+            width: 10rem;
+            opacity:1;
+        }
+    }
+}
+/** END SEARCH BAR ANIMATION **/
