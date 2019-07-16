@@ -173,11 +173,10 @@ if ( ! function_exists( 'understrap_widgets_init' ) ) {
 				'name'          => __( 'Above Nav', 'understrap' ),
 				'id'            => 'abovenav',
 				'description'   => __( 'Above nav widget with dynamic grid', 'understrap' ),
-				'before_widget' => '<div>',
-				'after_widget'  => '</div>',
+				'before_widget' => '',
+				'after_widget'  => '',
 				'before_title'  => '<h3 class="widget-title">',
-				'after_title'   => '</h3>',
-				'class'			=> 'd-sm-flex justify-content-between align-items-center w-100',
+				'after_title'   => '</h3>'
 			)
 		);
 		

@@ -97,6 +97,52 @@ if ( ! function_exists( 'understrap_theme_customize_register' ) ) {
 		);
 		
 		$wp_customize->add_setting(
+			'understrap_posts_header_color',
+			array(
+				'default'           => '',
+				'type'              => 'theme_mod',
+				'capability'        => 'edit_theme_options',
+			)
+		);
+
+		$wp_customize->add_control(
+			new WP_Customize_Color_Control(
+				$wp_customize,
+				'understrap_posts_header_color',
+				array(
+					'label'       => __( 'Posts Header Color', 'understrap' ),
+					'description' => __( 'Apply header color to all posts', 'understrap' ),
+					'section'     => 'understrap_theme_layout_options',
+					'settings'    => 'understrap_posts_header_color',
+					'priority'    => '10',
+				)
+			)
+		);
+		
+		$wp_customize->add_setting(
+			'understrap_posts_header_text_color',
+			array(
+				'default'           => '',
+				'type'              => 'theme_mod',
+				'capability'        => 'edit_theme_options',
+			)
+		);
+
+		$wp_customize->add_control(
+			new WP_Customize_Color_Control(
+				$wp_customize,
+				'understrap_posts_header_text_color',
+				array(
+					'label'       => __( 'Posts Header Color', 'understrap' ),
+					'description' => __( 'Apply header color to all posts', 'understrap' ),
+					'section'     => 'understrap_theme_layout_options',
+					'settings'    => 'understrap_posts_header_text_color',
+					'priority'    => '10',
+				)
+			)
+		);
+		
+		$wp_customize->add_setting(
 			'understrap_nav_fixed',
 			array(
 				'default'           => false,

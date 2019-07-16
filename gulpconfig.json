@@ -1,6 +1,6 @@
 {
   "browserSyncOptions" : {
-    "proxy": "localhost/leadingedgeenergy1/",
+    "proxy": "localhost/wordpress/",
     "notify": false
   },
   "browserSyncWatchFiles" : [

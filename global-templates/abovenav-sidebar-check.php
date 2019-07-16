@@ -14,6 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	<?php /*
  * echo preg_replace( '/<div[\s\S]*?widget[\s\S]*?>([\s\S]*?)<\/div>+$/' , '$1' , get_dynamic_sidebar( 'abovenav' ));
  */ ?>
-	<?php dynamic_sidebar( 'abovenav' ); ?>
+	<?php echo preg_replace( '/(<div class=")+?/' , '<div class="w-100 d-sm-flex justify-content-between ' , get_dynamic_sidebar( 'abovenav' )); ?>
+	<?php //dynamic_sidebar( 'abovenav' ); ?>
 
 <?php endif; ?>
