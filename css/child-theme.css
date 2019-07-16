@@ -11629,14 +11629,15 @@ figure.woocommerce-product-gallery__wrapper {
   padding: 0; }
 
 /** END WRAPPER SPACE **/
-/** NAV FIXED PADDING **/
+/** NAV FIXED PADDING **
 body {
-  padding-top: 60px; }
-
-@media (max-width: 767.98px) {
-  .navbar-brand > img {
-    max-height: 5rem; } }
-
+    padding-top:60px;
+}
+@include media-breakpoint-down(sm) {
+    .navbar-brand > img {
+        max-height: 5rem;
+    }
+}
 /** END NAV FIXED PADDING **/
 /** Responsive Heading **/
 h1 {

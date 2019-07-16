@@ -1,0 +1,4 @@
+.single .entry-header { text-align:center; }
+.single .entry-header a.lead { color:var(--white); padding:0.25rem 0.5rem; margin:0.25rem; border:2px solid var(--white); }
+.single .entry-header .entry-title { font-family:Gilroy; text-align:center; margin-top:1rem; }
+.single #content h1, .single #content h2, .single #content h3, .single #content h4, .single #content h5, .single #content h6 { color:var(--primary); }

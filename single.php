@@ -14,54 +14,62 @@ $header_color = get_theme_mod( 'understrap_posts_header_color' );
 $header_text_color = get_theme_mod( 'understrap_posts_header_text_color' );
 ?>
 
-<div class="wrapper" id="single-wrapper">
+<div class="wrapper container-fluid mt-3 mt-lg-4" id="single-wrapper">
 
-	<div class="<?php echo 'container' . ($header_color ? '-fluid' : ''); ?>" id="header" tabindex="-1">
-
-		<div class="row" style="<?php if($header_color) { echo 'background:'.esc_attr($header_color).';'; } if($header_text_color) { echo 'color:'.esc_attr($header_text_color).';'; } ?>">
+	<div class="row py-2" style="<?php if($header_color) { echo 'background:'.esc_attr($header_color).';'; } if($header_text_color) { echo 'color:'.esc_attr($header_text_color).';'; } ?>">
 		
-			<div class="col">
-		
-			<?php if($header_color) { ?>
+		<div class="col">
+	
+			<?php if(esc_attr($container)=='container') { ?>
 			
 			<div class="container">
 			<div class="row">
 			<div class="col">
 			
 			<?php } ?>
+			
+			<?php while ( have_posts() ) : the_post(); ?>
+			
 				<header class="entry-header">
+				
+					<?php foreach( (get_the_category()) as $category ) { ?>
+						<a class="lead category" href="<?php echo esc_url( get_category_link( $category->term_id ) ) ?>"><?php echo $category->name ?></a>
+					<?php } ?>
 
-					<?php the_title( '<h2 class="entry-title">', '</h2>' ); ?>
+					<?php the_title( '<h3 class="entry-title">', '</h3>' ); ?>
 
 					<div class="entry-meta">
 
-						<?php understrap_posted_on(); ?>
+						<span class="byline">By <?php echo get_the_author() ?></span> | <span class="posted-on"><?php echo get_the_date(); ?></span>
 
 					</div><!-- .entry-meta -->
 
 				</header><!-- .entry-header -->
-			
-		
-			<?php while ( have_posts() ) : the_post(); ?>
+
 			<?php endwhile; // end of the loop. ?>
 			
-			<?php if($header_color) { ?>
+			<?php if(esc_attr($container)=='container') { ?>
 			
 			</div>
 			</div>
 			</div>
 			
 			<?php } ?>
-			
-			</div>
 		
 		</div>
-		
+	
 	</div>
 
-	<div class="<?php echo esc_attr( $container ); ?>" id="content" tabindex="-1">
+	<div class="row py-3" id="content" tabindex="-1">
 
-		<div class="row">
+		<div class="col">
+		
+			<?php if(esc_attr($container)=='container') { ?>
+			
+			<div class="container">
+			<div class="row">
+			
+			<?php } ?>
 
 			<!-- Do the left sidebar check -->
 			<?php get_template_part( 'global-templates/left-sidebar-check' ); ?>
@@ -87,10 +95,19 @@ $header_text_color = get_theme_mod( 'understrap_posts_header_text_color' );
 
 			<!-- Do the right sidebar check -->
 			<?php get_template_part( 'global-templates/right-sidebar-check' ); ?>
+			
+			<?php if(esc_attr($container)=='container') { ?>
+
+			</div>
+			</div>
+			
+			<?php } ?>
 
 		</div><!-- .row -->
 
 	</div><!-- #content -->
+	
+	<?php get_template_part( 'loop-templates/footer', 'form' ); ?>
 
 </div><!-- #single-wrapper -->
 

@@ -50,7 +50,7 @@ function get_dynamic_sidebar($i = 1) {
 }
 /** END REMOVE SIDEBAR CONTAINER **/
 
-// LATEST POSTS SHORTCODE
+/** LATEST POSTS SHORTCODE **/
 function recent_posts_et_func( $atts ) {
 	$a = shortcode_atts( array(
 		'post_type' => 'post',
@@ -107,3 +107,15 @@ if ( ! function_exists( 'understrap_all_excerpts_get_more_link' ) ) {
  	} 
  }
 add_filter( 'wp_trim_excerpt', 'understrap_all_excerpts_get_more_link' );
+/** END LATEST POSTS SHORTCODE **/
+
+/** DYNAMIC CSS **/
+add_action( 'wp_enqueue_scripts', 'dynamic_enqueue_styles' );
+function dynamic_enqueue_styles() {
+
+	// Get the theme data
+	$the_theme = wp_get_theme();
+	if(is_single()) {
+		wp_enqueue_style( 'post-styles', get_stylesheet_directory_uri() . '/css/post.css', array(), $the_theme->get( 'Version' ) );
+	}
+}

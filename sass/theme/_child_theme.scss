@@ -3,10 +3,14 @@
 // variable declaration in SCSS we use variables to keep style clean and easy to modify
 // if we use this variable to say 50 rules and want to change the color, we would change only this variable.
 @font-face{
-    font-family:Gilroy;src:url('../fonts/gilroy-regular.otf')
+    font-family:Gilroy;
+    font-display: swap;
+    src:url('../fonts/gilroy-regular.otf');
 }
 @font-face{
-    font-family:Gilroy-Black;src:url('../fonts/gilroy-black.otf')
+    font-family:Gilroy-Black;
+    font-display: swap;
+    src:url('../fonts/gilroy-black.otf');
 }
 /** REMOVE WRAPPER SPACE **/
 .wrapper {
@@ -14,7 +18,7 @@
 }
 /** END WRAPPER SPACE **/
 
-/** NAV FIXED PADDING **/
+/** NAV FIXED PADDING **
 body {
     padding-top:60px;
 }

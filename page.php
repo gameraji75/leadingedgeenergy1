@@ -20,7 +20,7 @@ $container = get_theme_mod( 'understrap_container_type' );
 
 ?>
 
-<div class="wrapper" id="page-wrapper">
+<div class="wrapper mt-3 mt-lg-4" id="page-wrapper">
 
 	<div class="container-fluid" id="content" tabindex="-1">
 
