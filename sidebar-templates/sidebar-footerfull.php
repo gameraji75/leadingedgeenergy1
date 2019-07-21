@@ -22,7 +22,7 @@ $footer_padding = get_theme_mod( 'footer_padding' );
 
 		<div class="<?php echo esc_attr( $container ); ?>" id="footer-full-content" tabindex="-1">
 
-			<div class="row bg-grey py-<?php echo esc_attr( $footer_padding ); ?> py-md-4">
+			<div class="row bg-grey py-<?php echo esc_attr( $footer_padding ); ?> py-md-3">
 
 				<?php dynamic_sidebar( 'footerfull' ); ?>
 

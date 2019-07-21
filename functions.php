@@ -32,6 +32,7 @@ function add_child_theme_textdomain() {
 }
 add_action( 'after_setup_theme', 'add_child_theme_textdomain' );
 
+
 /** WEBP SUPPORT **/
 function cc_mime_types($mimes) {
     $mimes['webp'] = 'image/webp';
@@ -50,6 +51,7 @@ function get_dynamic_sidebar($i = 1) {
 }
 /** END REMOVE SIDEBAR CONTAINER **/
 
+
 /** LATEST POSTS SHORTCODE **/
 function recent_posts_et_func( $atts ) {
 	$a = shortcode_atts( array(
@@ -65,39 +67,16 @@ function recent_posts_et_func( $atts ) {
 		'showposts' => $a['showposts'],
 		'nopaging' => 0,
 		'post_status' => $a['post_status']));
-	if ($args3->have_posts()) :
-		ob_start(); ?>
-			<div class="card-deck">
-				<?php while ($args3->have_posts()) : $args3->the_post(); 
-				global $post; ?>
-				<div class="card border-0 bg-transparent">
-					<?php if(has_post_thumbnail()) { ?>
-					<a href="<?php echo esc_url(get_permalink()) ?>"><img width="300" height="300" src="<?php echo  get_the_post_thumbnail_url($post->ID, "recent_posts_thumb_et") ?>" class="" alt="" title="" ></a>
-					<?php } ?>
-					<div class="card-body px-0">
-						<a href="<?php echo esc_url(get_permalink()) ?>"><h6 class="card-title text-primary"><?php echo  get_the_title() ?></h6></a>
-						<p class="card-text"><small class="text-muted"><?php echo get_the_author() ?> | 
-						<?php foreach( (get_the_category()) as $category ) { ?>
-						<a href="<?php echo esc_url( get_category_link( $category->term_id ) ) ?>"><?php echo $category->name ?></a>
-						<?php } ?>
-						</small></p>
-						<p class="card-text"><?php echo get_the_excerpt() ?></p>
-					</div>
-				</div>
-				<?php if ( ( $args3->current_post + 1 && $args3->current_post + 1 != $args3->post_count ) % 2 === 0 ) { ?>
-				<div class="w-100 d-none d-sm-block d-md-none"></div>
-				<?php }
-				endwhile; ?>
-			</div>
-	<?php wp_reset_query();  // Restore global post data stomped by the_post().
-	endif;
+	ob_start();
+	include 'shortcodes/recent_posts_et.php';
 	
 	return ob_get_clean();
 }
 add_shortcode( 'recent_posts_et', 'recent_posts_et_func' );
 
 add_image_size( 'recent_posts_thumb_et', 256, 144, true ); 
-  
+
+add_filter( 'wp_trim_excerpt', 'understrap_all_excerpts_get_more_link' );
 if ( ! function_exists( 'understrap_all_excerpts_get_more_link' ) ) { 
  	function understrap_all_excerpts_get_more_link( $post_excerpt ) { 
  		if ( ! is_admin() ) { 
@@ -106,8 +85,26 @@ if ( ! function_exists( 'understrap_all_excerpts_get_more_link' ) ) {
  		return $post_excerpt; 
  	} 
  }
-add_filter( 'wp_trim_excerpt', 'understrap_all_excerpts_get_more_link' );
 /** END LATEST POSTS SHORTCODE **/
+
+
+/** LATEST POSTS SHORTCODE **/
+add_shortcode( 'popup_et', 'popup_et_func' );
+function popup_et_func( $atts ) {
+	$a = shortcode_atts( array(
+		'file_name' => 'newsletter_et',
+		'time_delay' => '20',
+		'form_id' => '',
+		'heading' => '',
+	), $atts );
+
+	ob_start();
+	include 'shortcodes/popup_'.$a['file_name'].'.php';
+	
+	return ob_get_clean();
+}
+/** END LATEST POSTS SHORTCODE **/
+
 
 /** DYNAMIC CSS **/
 add_action( 'wp_enqueue_scripts', 'dynamic_enqueue_styles' );
@@ -118,4 +115,104 @@ function dynamic_enqueue_styles() {
 	if(is_single()) {
 		wp_enqueue_style( 'post-styles', get_stylesheet_directory_uri() . '/css/post.css', array(), $the_theme->get( 'Version' ) );
 	}
+	if(is_category()) {
+		wp_enqueue_style( 'category-styles', get_stylesheet_directory_uri() . '/css/category.css', array(), $the_theme->get( 'Version' ) );
+	}
 }
+/** END DYNAMIC CSS **/
+
+
+/** GRAVITY FORMS <LI> TO <DIV> **/
+add_filter( 'gform_field_container', 'et_field_container', 10, 6 );
+function et_field_container( $field_container, $field, $form, $css_class, $style, $field_content ) {
+	if(!is_admin()) {
+		if ($field->type == 'name') {
+			$output = '<div class="form-row '.$css_class.'">{FIELD_CONTENT}</div>';
+		}
+		else {
+			if(strstr($css_class,'gf_left')){
+				$output = '<div class="form-row"><div class="col '.$css_class.'">{FIELD_CONTENT}</div>';
+			}
+			elseif(strstr($css_class,'gf_middle')) {
+				$output = '<div class="col '.$css_class.'">{FIELD_CONTENT}</div>';
+			}
+			elseif(strstr($css_class,'gf_right')) {
+				$output = '<div class="col '.$css_class.'">{FIELD_CONTENT}</div></div>';
+			}
+			else {
+				$output = '<div class="form-group '.$css_class.'">{FIELD_CONTENT}</div>';
+			}
+		}
+		return $output;
+	}
+	else {
+		$field_markup = str_replace( '{FIELD_CONTENT}', $field_content, $field_container );
+
+		return $field_markup;
+	}
+}
+
+add_filter( 'gform_field_input', 'tracker', 10, 5 );
+function tracker( $input, $field, $value, $lead_id, $form_id ) {
+    if(!is_admin()) {
+		// because this will fire for every form/field, only do it when it is the specific form and field
+		if($field->type != 'name') {
+			$input = '<input type="'. $field->type .'" id="input_'. $form_id .'_'.$field->id .'" name="input_'. $field->id . '" value="'. $field->value .'" class="form-control '. $field->cssClass .'" placeholder="'.$field['placeholder'].'" >';
+		}
+		
+		if ($field->type == 'name') {
+
+			foreach ($field->inputs as $f) {
+				if(!$f['isHidden']){
+					$input .= '<div class="col">';
+					if($field->subLabelPlacement == 'above') {
+						$input .= '<label for="input_'.$form_id.'_'.preg_replace('/\./i','_',$f['id']).'">'.($f['customLabel']?$f['customLabel']:$f['label']).'</label>';
+					}
+					$input .= '<input type="text" id="input_'.$form_id.'_'.preg_replace('/\./i','_',$f['id']).'" name="input_'.$f['id'].'" class="form-control '.$field->cssClass.'" value="" aria-label="'.$f->label.'" placeholder="'.$f['placeholder'].'" />';
+					if($field->subLabelPlacement == 'below') {
+						$input .= '<label for="input_'.$form_id.'_'.preg_replace('/\./i','_',$f['id']).'">'.($f['customLabel']?$f['customLabel']:$f['label']).'</label>';
+					}
+					$input .= '</div>';
+				}
+			}
+		}
+	}
+  
+	return $input;
+}
+
+add_filter( 'gform_next_button', 'input_to_button', 10, 2 );
+add_filter( 'gform_previous_button', 'input_to_button', 10, 2 );
+add_filter( 'gform_submit_button', 'input_to_button', 10, 2 );
+function input_to_button( $button, $form ) {
+    $dom = new DOMDocument();
+    $dom->loadHTML( $button );
+    $input = $dom->getElementsByTagName( 'input' )->item(0);
+    $new_button = $dom->createElement( 'button' );
+    $new_button->appendChild( $dom->createTextNode( $input->getAttribute( 'value' ) ) );
+    $input->removeAttribute( 'value' );
+    foreach( $input->attributes as $attribute ) {
+        $new_button->setAttribute( $attribute->name, $attribute->value );
+    }
+    $input->parentNode->replaceChild( $new_button, $input );
+ 
+    return $dom->saveHtml( $new_button );
+}
+/** END GRAVITY FORMS <LI> TO <DIV> **/
+
+
+/** POST TEMPLATE BASED ON CATEGORY **/
+add_filter( 'single_template', 'add_postType_slug_template', 10, 1 );
+function add_posttype_slug_template( $single_template ) {
+	$object = get_queried_object();
+
+	foreach(get_the_category($object->ID) as $cat) {
+ 
+		if(file_exists(locate_template('single-cat-'.$cat->slug.'.php'))) {
+			return locate_template('single-cat-' . $cat->slug . '.php');
+		}
+
+	}
+	return $single_template;
+}
+/** END POST TEMPLATE BASED ON CATEGORY **/

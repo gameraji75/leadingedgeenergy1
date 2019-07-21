@@ -11,6 +11,8 @@ defined( 'ABSPATH' ) || exit;
 
 <article <?php post_class(); ?> id="post-<?php the_ID(); ?>">
 
+	<?php the_title( '<h3 class="entry-title text-teal">', '</h3>' ); ?>
+
 	<div class="entry-content mb-4">
 
 		<?php the_content(); ?>
@@ -40,6 +42,10 @@ defined( 'ABSPATH' ) || exit;
 	</footer><!-- .entry-footer -->
 
 </article><!-- #post-## -->
-<!-- NEWSLETTER POPUP -->
-<?php echo do_shortcode("[popup_et file_name='newsletter_et' time_delay='20']"); ?>
-<!-- END NEWSLETTER POPUP -->
+<!-- FOOD INDUSTRY POPUP -->
+<?php if(has_tag('food-industry')) {
+	echo do_shortcode("[popup_et file_name='food_industry_et' time_delay='20']");
+} else {
+	echo do_shortcode("[popup_et file_name='newsletter_et' time_delay='20']");
+} ?>
+<!-- END FOOD INDUSTRY POPUP -->
